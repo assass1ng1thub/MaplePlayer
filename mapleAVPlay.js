@@ -50,29 +50,30 @@ mapleAVPlay = (function () {
         // Хранит функцию которая из вне получает текст субтитров
         var _callbackTextSubtitle = null;
         //#region public functions
-        /**
-         * Инициализирует объект плеера 
-         * @param {String} __containerID - контейнер плеера
-         */
-         var getConteiner = function () {
+
+        var getConteiner = function () {
             return _containerID;
-         }
+        }
+        /**
+        * Инициализирует объект плеера 
+        * @param {String} __containerID - контейнер плеера
+        */
         var init = function (__containerID) {
             // проверяем что это самсунг maple
             if (!(navigator.userAgent.toLowerCase().indexOf("maple") > -1)) {
                 throw new Error('this is not Samsung Maple "Orsay"');
             }
             _containerID = __containerID;
-            alert("conteiner 1 "+_containerID)
+            alert("conteiner 1 " + _containerID)
             webapis.avplay.getAVPlay(function (avplay) {
                 _AVPlay = avplay;
                 if (_AVPlay.init({ containerID: _containerID })) {
                     _containerID = _AVPlay.containerID;
-                    alert("conteiner 2 "+_containerID)
+                    alert("conteiner 2 " + _containerID)
                 };
                 _plugin = _AVPlay.setPlayerPluginObject(_containerID, null, null)
                 _AVPlay.onEvent = _eventHandler;
-                alert("conteiner 3 "+_containerID)
+                alert("conteiner 3 " + _containerID)
             },
                 function () {
                     alert('onGetAVPlayError: ' + error.message);
@@ -94,8 +95,8 @@ mapleAVPlay = (function () {
             if (_AVPlay.open(sUrl)) {
 
                 alert("test");
-                 alert(document.getElementById(_containerID))
-                 document.getElementById(_containerID).dispatchEvent(_canPlay);
+                alert(document.getElementById(_containerID))
+                document.getElementById(_containerID).dispatchEvent(_canPlay);
             };
             _AVPlay.play(function () {
                 alert('[mapleAVPlay:] video load');
@@ -133,13 +134,13 @@ mapleAVPlay = (function () {
         var getAVPlayObject = function () {
             return _AVPlay;
         }
-        var getVideoWidth = function(){
+        var getVideoWidth = function () {
             return _videoWidth;
         }
-        var getVideoHeight = function(){
+        var getVideoHeight = function () {
             return _videoHeight;
         }
-        var getDuration = function(){
+        var getDuration = function () {
             return _duration;
         }
         var jumpBackward = function (s) {
@@ -152,122 +153,73 @@ mapleAVPlay = (function () {
                 webapis._plugin(_plugin, "jumpForward", s);
             }
         }
-        // Player.setSize = function(x_mode) {
-        //     if (plmini_on) return;
-        //     var x_res = 960,
-        //         y_res = 540;
-        //     if (this.w == 0 || this.w == '') Player.GetResolution();
-        //     var area_x, area_y, area_w, area_h, crop_x, crop_y, crop_w, crop_h, text;
-        //     area_x = 0;
-        //     area_y = 0;
-        //     area_w = 960;
-        //     area_h = 540;
-        //     crop_x = 0;
-        //     crop_y = 0;
-        //     crop_w = this.w;
-        //     crop_h = this.h;
-        //     if (this.w == 0 || this.w == '') return;
-        //     switch (x_mode) {
-        //         case 0:
-        //             if (crop_w / crop_h < 1.79 || this.w == 0) {
-        //                 text = 'ORIGINAL';
-        //                 area_w = y_res * crop_w / crop_h;
-        //                 area_x = (x_res - area_w) / 2
-        //             } else {
-        //                 text = 'ORIGINAL';
-        //                 area_h = x_res * crop_h / crop_w;
-        //                 area_y = (y_res - area_h) / 2
-        //             };
-        //             break;
-        //         case 1:
-        //             text = 'FULL';
-        //             break;
-        //         case 2:
-        //             text = 'MANUAL';
-
-        //                 text += " " + Pw + "%/" + Ph + "%"
-    
-        //             if (Pw <= 100) {
-        //                 area_w = (x_res / 100) * Pw;
-        //                 area_x = (x_res - area_w) / 2
-        //             } else {
-        //                 crop_x = crop_w * (Pw / 200 - 0.5);
-        //                 crop_w = crop_w * (2 - Pw / 100)
-        //             }
-        //             if (Ph <= 100) {
-        //                 area_h = (y_res / 100) * Ph;
-        //                 area_y = (y_res - area_h) / 2
-        //             } else {
-        //                 crop_y = crop_h * ((Ph / 200) - 0.5);
-        //                 crop_h = crop_h * (2 - Ph / 100)
-        //             }
-        //             break;
-        //         default:
-        //             Player.setSize(0);
-        //             return;
-        //             text = 'Не определён!';
-        //             break
-        //     };
-        //     if (this.Sef) {
-        //         this.SefPlugin.Execute('SetDisplayArea', area_x, area_y, area_w, area_h);
-        //         if (x_mode != 1) this.SefPlugin.Execute('SetCropArea', crop_x, crop_y, crop_w, crop_h);
-        //         else if (this.change) this.SefPlugin.Execute('SetCropArea', 0, 0, 0, 0)
-        //     } else {
-        //         this.plugin.SetDisplayArea(area_x, area_y, area_w, area_h);
-        //         if (x_mode != 1) this.plugin.SetCropArea(crop_x, crop_y, crop_w, crop_h);
-        //         else if (this.change) this.plugin.SetCropArea(0, 0, 0, 0)
-        //     };
-        //     lI0l1JOwNQO001Ypr(text);
-        //     this.change = !0
-        // };
+        /**
+         * Устанавливает размер экрана, 0 - Оригинальный размер, 1 - растянуть на полный экран, 80-140 - установить масштаб видео
+         * @param {Number} mode 
+         */
         var setDisplayMethod = function (mode) {
-            if (mode == 'COVER_SCREEN_MODE') {
-                var x_res = curWidget.width,
-                    y_res = curWidget.height;
-                var area_x, area_y, area_w, area_h, crop_x, crop_y, crop_w, crop_h;
-                area_x = 0;
-                area_y = 0;
-                area_w = curWidget.width;
-                area_h = curWidget.height;
-                crop_x = 0;
-                crop_y = 0;
-                crop_w = _videoWidth;
-                crop_h = _videoHeight;
-                var Pw = 120;
-                var Ph = 120; 
-            if (Pw <= 100) {
-                area_w = (x_res / 100) * Pw;
-                area_x = (x_res - area_w) / 2
-            } else {
-                crop_x = crop_w * (Pw / 200 - 0.5);
-                crop_w = crop_w * (2 - Pw / 100)
+            var xV = 960,
+                yV = 540,
+                aX = 0,
+                aY = 0,
+                aW = 960,
+                aH = 540,
+                cX = 0,
+                cY = 0,
+                pH = 100,
+                pW = 100,
+                cW = _videoWidth,
+                cH = _videoHeight;
+            switch (mode) {
+                //original
+                case 0:
+                    if (cW / cH < 1.79) {
+                        aW = yV * cW / cH;
+                        aX = (xV - aW) / 2;
+                    } 
+                    else {
+                        aH = xV * cH / cW;
+                        aY = (yV - aH) / 2;
+                    };
+                    break;
+                //full
+                case 1:
+                    break;
+                default:
+                //zoom
+                if(mode >= 80 && mode <= 140){
+                    alert("zoom mode" + mode);
+                    pH = mode;
+                    pW = mode;
+                    if (pW <= 100) {
+                        aW = (xV / 100) * pW;
+                        aX = (xV - aW) / 2
+                    }
+                    else {
+                        cX = cW * (pW / 200 - 0.5);
+                        cW = cW * (2 - pW / 100)
+                    }
+                    if (pH <= 100) {
+                        aH = (yV / 100) * pH;
+                        aY = (yV - aH) / 2
+                    }
+                    else {
+                        cY = cH * ((pH / 200) - 0.5);
+                        cH = cH * (2 - pH / 100)
+                    }
+                }
+                else{
+                    setDisplayMethod(0);
+                    return;
+                }
+                break;
+            };
+            _AVPlay.setDisplayArea({ left: aX, top: aY, width: aW, height: aH });
+            if (mode != 1) {
+                _AVPlay.setCropArea(_onSuccess, _onError, { left: cX, top: cY, width: cW, height: cH })
             }
-            if (Ph <= 100) {
-                area_h = (y_res / 100) * Ph;
-                area_y = (y_res - area_h) / 2
-            } else {
-                crop_y = crop_h * ((Ph / 200) - 0.5);
-                crop_h = crop_h * (2 - Ph / 100)
-            }
-            // area_x, area_y, area_w, area_h
-            // crop_x, crop_y, crop_w, crop_h
-                _AVPlay.setDisplayArea({ left: area_x, top: area_y, width: area_w, height: area_h })
-                // _AVPlay.setDisplayArea({ left: 200, top: 200, width: 500, height: 500 })
-                // _AVPlay.setCropArea(_onSuccess, _onError, { left: 71, top: 71, width: 700, height: 700 })
-                _AVPlay.setCropArea(_onSuccess, _onError, { left: crop_x, top: crop_y, width: crop_w, height: crop_h })
-            }
-            else if (mode == 'FULL_SCREEN_MODE') {
-            //    _AVPlay.setDisplayRect({ left: 0, top: 0, width: 960, height: 540 })
-                alert("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
-                _AVPlay.setDisplayArea({ left: 0, top: 0, width: curWidget.width, height: curWidget.height });
-                // _AVPlay.setDisplayRect({ left: 0, top: 0, width: 960, height: 540 })
-                // webapis._plugin(_plugin, "jumpForward", s);
-               
-
-            }
-            else {
-                var fitDisplayArea = _AVPlay.getFitDisplayArea(_videoWidth, _videoHeight);
-                _AVPlay.setDisplayArea(fitDisplayArea)
+            else { 
+                _AVPlay.setCropArea(_onSuccess, _onError, { left: 0, top: 0, width: 0, height: 0 }) 
             }
         }
         /**
@@ -282,17 +234,17 @@ mapleAVPlay = (function () {
         var pause = function () {
             _AVPlay.pause();
         }
-         /**
-          * Останавливает видео
-          */
+        /**
+         * Останавливает видео
+         */
         var stop = function () {
             _AVPlay.stop();
-         }
+        }
         /**
         * Возвращает информацию о доступных аудиодорожках
         * @returns associative array audio ['id', 'lang']
         */
-         var getAudioInfo = function () {
+        var getAudioInfo = function () {
             return _audio;
         }
         /**
@@ -330,10 +282,10 @@ mapleAVPlay = (function () {
             _enableSubtitle = true;
         }
 
-       /**
-        * Возвращает информацию о доступных субтитрах
-        * @returns associative array subtitles ['id', 'lang']
-        */
+        /**
+         * Возвращает информацию о доступных субтитрах
+         * @returns associative array subtitles ['id', 'lang']
+         */
         var getSubtitleInfo = function () {
             return _subtitle;
         }
@@ -383,7 +335,7 @@ mapleAVPlay = (function () {
             _AVPlay.startSubtitle({ path: "/dtv/temp/", streamID: 999, sync: 999, callback: function () { } });
             _idSubtitle = 0;
         }
-        //извлекает информацию о субттрах с видео
+        //извлекает информацию о субтитрах из видео
         var _getSubtitle = function () {
             var amount = _AVPlay.getTotalNumOfStreamID(4);
             if (amount > 0) {
@@ -394,7 +346,7 @@ mapleAVPlay = (function () {
                 }
             }
         }
-        //извлекает информацию об аудиодорожках с видео
+        //извлекает информацию об аудиодорожках из видео
         var _getAudio = function () {
             var amount = _AVPlay.getTotalNumOfStreamID(1);
             if (amount > 0) {
@@ -564,28 +516,26 @@ mapleAVPlay = (function () {
         }
         //
         var _onSuccess = function () {
-           
+
             alert('[mapleAVPlay:] true crop');
         }
-
 
         var VideoError = function (message) {
             this.name = "VideoError";
             this.message = message;
         }
         VideoError.prototype = Error.prototype;
-        
 
         //#region методы доступные наружу
-        return {           
+        return {
             "init": init,
-            "getConteiner":getConteiner,
+            "getConteiner": getConteiner,
             "open": open,
             "play": play,
             "pause": pause,
             "stop": stop,
             "seekTo": seekTo,
-            "getState":getState,
+            "getState": getState,
             "setDisplayMethod": setDisplayMethod,
             "jumpBackward": jumpBackward,
             "jumpForward": jumpForward,
@@ -604,7 +554,7 @@ mapleAVPlay = (function () {
             "nextSubtitle": nextSubtitle,
             "setSubtitle": setSubtitle,
         }
-//#endregion
+        //#endregion
     } catch (e) {
         debuglog(e.name);
         debuglog(e.lineNumber);
@@ -624,74 +574,3 @@ var debuglog = function (arg) {
     console.log('debuglog', arg);
     alert('debuglog ' + arg);
 };
-//#region webapis functions 
-// function init(option)
-// function open(url, option)
-// function play(successCallback, errorCallback, sec)
-// function stop()
-// function pause()
-// function resume()
-// function jumpForward(sec)
-// function jumpBackward(sec)
-// function setSpeed(speed)
-// function setAudioStreamID(index)
-// function setSubtitleStreamID(index)
-// function getCurrentBitrate()
-// function getAvailableBitrates()
-// function startSubtitle(option)
-// function stopSubtitle()
-// function setSubtitleSync(millisec)
-// function GetStreamLanguageInfo(index)
-// function setDisplayRect(rect)
-// function clear()
-// function show()
-// function hide()
-// function getZIndex()
-// function setZIndex(zIndex)
-// function getVolume()
-// function setVolume(volume)
-// function setCropArea(successCallback, errorCallback, rect)
-// function setDisplayArea(rect)
-// function getDuration()
-// function getVideoResolution()
-// function getTotalNumOfStreamID(streamType)
-// function setStreamID(streamType, index)
-// function getStreamLanguageInfo(streamType, index)
-// function getStreamExtraData(streamType, index)
-// function setPlayerProperty(propertyType, param1, param2)
-// function setTotalBufferSize(bytes)
-// function setInitialBufferSize(bytes)
-// function setPendingBufferSize(bytes)
-// function setOutputDOT(disable)
-// function setMacrovision(macrovisionLevel)
-// function setVBIData(macrovisionType, cgmsType)
-// function setICT(on)
-// function destroy()
-// function _setStatus(status)
-// function setPlayerPluginObject(containerID, zIndex, pluginObjectID)
-// function getSubtitleAvailable()
-// function onEvent(type, data) {
-// function getFitDisplayArea(width, height)
-
-//#endregion
-//#region avplay properties
-// a.0.id = 0
-// a.0.url = http://192.168.1.10/1.mkv
-// a.0.duration = 8887924
-// a.0.videoWidth = null
-// a.0.videoHeight = null
-// a.0.displayRect = SRect(left:0, top:0, width:960, height:540)
-// a.0.displayArea = SRect(left:0, top:72, width:960, height:396)
-// a.0.containerID = player_container
-// a.0.zIndex = 10
-// a.0.cropArea = null
-// a.0.totalNumOfVideo = null
-// a.0.totalNumOfAudio = null
-// a.0.totalNumOfSubtitle = null
-// a.0.totalBufferSize = -1
-// a.0.pendingBufferSize = -1
-// a.0.initialBufferSize = -1
-// a.0.macrovision = false
-// a.0.status = 4
-// a.0.authHeader = basic
-//#endregion
